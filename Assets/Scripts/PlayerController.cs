@@ -4,8 +4,13 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 [RequireComponent(typeof(Rigidbody2D))]
 
-//written with help from the following tutorials: https://www.youtube.com/watch?v=XhwRYNie-aI
+//written with help from the following tutorials: 
+//https://www.youtube.com/watch?v=XhwRYNie-aI base player movement
 //https://www.youtube.com/watch?v=24-BkpFSZuI flip() and a better version of Jump
+//Player stick to walls fix: https://www.youtube.com/watch?v=rcob41f6WVQ
+//better version of ground check: https://www.youtube.com/watch?v=P_6W-36QfLA
+
+//Please note that I figured out the player running and gradual increase of player speed on my own.
 
 public class PlayerController : MonoBehaviour
 {
