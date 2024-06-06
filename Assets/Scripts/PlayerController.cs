@@ -9,6 +9,7 @@ using UnityEngine.InputSystem;
 //https://www.youtube.com/watch?v=24-BkpFSZuI flip() and a better version of Jump
 //Player stick to walls fix: https://www.youtube.com/watch?v=rcob41f6WVQ
 //better version of ground check: https://www.youtube.com/watch?v=P_6W-36QfLA
+//Coyote Time and Jump Buffering: https://www.youtube.com/watch?v=RFix_Kg2Di0
 
 //Please note that I figured out the player running and gradual increase of player speed on my own.
 
@@ -33,6 +34,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float jumpMultiplier;
     bool isJumping;
     float jumpCounter;
+
+    //used by CoyoteTime
+    private float coyoteTime = 0.05f;
+    private float coyoteTimeCounter;
 
     //used by run
     bool isRunning=false;
@@ -62,6 +67,15 @@ public class PlayerController : MonoBehaviour
         else if(isFacingRight&&horizontal < 0f)
         {
             Flip();
+        }
+
+        if (isGrounded())
+        {
+            coyoteTimeCounter = coyoteTime;
+        }
+        else
+        {
+            coyoteTimeCounter -= Time.deltaTime;
         }
              
         if(playerRbody.velocity.y >0 && isJumping) //if the player is going up and jumping
@@ -107,8 +121,7 @@ public class PlayerController : MonoBehaviour
 
         }
         if (isRunning == true)
-        {
-            
+        {            
             if (buildupSpeed < runSpeed)
             {
                 buildupSpeed = buildupSpeed + 0.1f; //gradually increase player speed from walking to running                
@@ -118,28 +131,11 @@ public class PlayerController : MonoBehaviour
             if (playerRbody.velocity.x < walkSpeed &&isFacingRight) //if you move slower than walking speed and are facing right, reset the speed buildup when moving right
             {
                 buildupSpeed = walkSpeed;
-            }          
-            
+            }        
         }
-                    
-    }
 
-    public void Jump(InputAction.CallbackContext context)
-    {
-        if (context.performed && isGrounded()) {
-            playerRbody.velocity = new Vector2(playerRbody.velocity.x, jumpPower); //changes player velocity (up) to how high we can jump with jump power
-            isJumping = true;
-            jumpCounter = 0; //resets jump time            
-        }
-        if(context.canceled && playerRbody.velocity.y > 0f)
-        {
-            isJumping = false; //spring je niet meer (maar ga je nog wel door omhoog)
-            jumpCounter = 0; //reset je de jump counter omdat je niet meer springt
-            if (playerRbody.velocity.y > 0) //zolang je nog omhoog gaat:
-            {
-                playerRbody.velocity = new Vector2(playerRbody.velocity.x, playerRbody.velocity.y * 0.6f); //zorg ervoor dat je steeds minder snel omhoog gaat
-            }
-        }
+      
+                    
     }
 
     private void Flip()
@@ -150,10 +146,29 @@ public class PlayerController : MonoBehaviour
         transform.localScale = localScale;
     }
 
+    public void Jump(InputAction.CallbackContext context)
+    {
+        if (context.performed && coyoteTimeCounter>0f) {
+            playerRbody.velocity = new Vector2(playerRbody.velocity.x, jumpPower); //changes player velocity (up) to how high we can jump with jump power
+            isJumping = true;
+            jumpCounter = 0; //resets jump time            
+        }
+        if(context.canceled && playerRbody.velocity.y > 0f)
+        {
+            isJumping = false; //spring je niet meer (maar ga je nog wel door omhoog)
+            jumpCounter = 0; //reset je de jump counter omdat je niet meer springt
+            coyoteTimeCounter = 0;
+
+            if (playerRbody.velocity.y > 0) //zolang je nog omhoog gaat:
+            {
+                playerRbody.velocity = new Vector2(playerRbody.velocity.x, playerRbody.velocity.y * 0.6f); //zorg ervoor dat je steeds minder snel omhoog gaat
+            }
+        }
+    }     
+
     bool isGrounded() //does the player capsule collider overlap with the ground?
     {
-        return Physics2D.OverlapCapsule(groundCheck.position, new Vector2(1f, 0.085f), CapsuleDirection2D.Horizontal, 0, groundLayer);
-
+        return Physics2D.OverlapCapsule(groundCheck.position, new Vector2(.5f, 0.085f), CapsuleDirection2D.Horizontal, 0, groundLayer); //je maakt een capsule collider aan ter grootte van .5f. je kijkt of die overlapt met de collider van de grond.
     }
     public void OnMove(InputAction.CallbackContext context) //dit refereert naar je input op je gamepad of je keyboard. in dit geval, onMove
     {
