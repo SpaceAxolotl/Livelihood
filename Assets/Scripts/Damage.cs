@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 //attach to a damage source
+//this script made use of the following tutorials: https://www.youtube.com/watch?v=S61J3kDQ5Mk, https://www.youtube.com/watch?v=_1Oou4459Us
 
 public class Damage : MonoBehaviour
 {
@@ -19,21 +20,28 @@ public class Damage : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             print("player entered");
-            if (playerHealth.currentHealth>0)
+            if (playerHealth.currentHealth > 0 && isInvincible == false)
             {
               playerHealth.TakeDamage(damage);
-              StartCoroutine (BecomeInvincible());
+                playerTookDmg = true;
+            }
+            if (playerTookDmg == true)
+            {
+                StartCoroutine(BecomeInvincible());
+                
             }
                
             
         }
        IEnumerator BecomeInvincible()
         {
-            Physics2D.IgnoreLayerCollision(7, 8, true);
+            playerTookDmg = false;
+            isInvincible = true;
             print("you are now invincible");
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(2f);
+            isInvincible = false;
             print("You are no longer invincible");
-            Physics2D.IgnoreLayerCollision(7, 8, false);
+          
                        
         }
     }
