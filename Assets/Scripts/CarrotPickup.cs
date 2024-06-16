@@ -16,11 +16,13 @@ public class CarrotPickup : MonoBehaviour
     private bool isPlayerNearby = false; // Whether the player is within the detection radius
 
     private InputAction interact;
+    public static event System.Action OnCarrotCollected;
 
     public _2DBart playerControls;
+    [SerializeField] GameObject[] Carrots;
 
 
-    private static int totalCarrotsCollected = 0; // Keeps track of the total carrots collected by the player
+    public static int totalCarrotsCollected = 0; // Keeps track of the total carrots collected by the player
 
     private void Awake()
     {
@@ -75,28 +77,25 @@ public class CarrotPickup : MonoBehaviour
             // Check if the required number of presses is reached
             if (currentPressCount >= requiredPresses)
             {
-                PullOutCarrot();
+                CollectCarrot();
             }
         }
     }
 
-    private void PullOutCarrot()
+    public void CollectCarrot()
     {
-        // Add the carrot to the player's collection
         totalCarrotsCollected++;
-        Debug.Log("Carrot pulled out! Total carrots collected: " + totalCarrotsCollected);
+        OnCarrotCollected?.Invoke(); // Trigger the event
+        Destroy(gameObject); // Destroy the carrot after collecting
+    }
 
-        // Optionally, you can destroy the carrot game object or disable it
-        Destroy(gameObject);
+    public static int GetCollectedCarrotAmount()
+    {
+        return totalCarrotsCollected;
     }
    
 
-    private void OnDrawGizmosSelected()
-    {
-        // Draw a sphere in the editor to show the detection radius
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, detectionRadius);
-    }
+    
 }
 
 

@@ -350,7 +350,7 @@ public partial class @_2DBart: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""fabf2c04-d0ba-41d5-9120-b1c54a356989"",
-                    ""path"": ""<Keyboard>/f"",
+                    ""path"": ""<Keyboard>/w"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
