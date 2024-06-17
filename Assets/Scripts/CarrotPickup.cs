@@ -18,11 +18,19 @@ public class CarrotPickup : MonoBehaviour
     private InputAction interact;
     public static event System.Action OnCarrotCollected;
 
+    public GameObject fill; 
+
     public _2DBart playerControls;
     [SerializeField] GameObject[] Carrots;
 
 
     public static int totalCarrotsCollected = 0; // Keeps track of the total carrots collected by the player
+
+    private void Start()
+    {
+        fill.transform.localPosition = new Vector3(0, -0.5f, 0);
+        fill.SetActive(false);
+    }
 
     private void Awake()
     {
@@ -71,15 +79,31 @@ public class CarrotPickup : MonoBehaviour
         if (context.performed && isPlayerNearby)
         {
             // Increment the current press count
+            if (currentPressCount == 0)
+            {
+                fill.SetActive(true);
+            }
             currentPressCount++;
             Debug.Log($"Button pressed {currentPressCount} times");
 
+            FillProgressBar();
+           
             // Check if the required number of presses is reached
             if (currentPressCount >= requiredPresses)
             {
                 CollectCarrot();
             }
         }
+    }
+
+    public void FillProgressBar()
+    {
+        float progress = (float)currentPressCount / requiredPresses;
+        progress = Mathf.Clamp01(progress); // Ensure the progress value is between 0 and 1
+        fill.transform.localScale = new Vector3(1, progress, 1); // Update the Fill scale based on the progress
+        fill.transform.localPosition = new Vector3(0, progress / 2 - 0.5f, 0);
+        
+        
     }
 
     public void CollectCarrot()
