@@ -98,7 +98,10 @@ public class PlayerController : MonoBehaviour
 
         if(playerRbody.velocity.y <= 0) //checks if we're falling downwards
         {
-            playerRbody.velocity -= vecGravity * fallMultiplier * Time.deltaTime; //increases velocity (down) based on how long you're falling
+            if (playerRbody.velocity.y >= -20) //terminal velocity = y-20
+            {
+                playerRbody.velocity -= vecGravity * fallMultiplier * Time.deltaTime; //increases velocity (down) based on how long you're falling
+            }
         }
 
       

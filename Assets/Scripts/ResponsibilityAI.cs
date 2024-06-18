@@ -17,14 +17,17 @@ public class ResponsibilityAI : MonoBehaviour
     enemystate state = enemystate.wander;
     [SerializeField] float wanderSpeed;
     [SerializeField] Rigidbody2D enemyRB;
-    //fase 1
+   
+    //State 1: stationary
     int damage;
-    //fase 2
+
+    //State 2: Wander
     [SerializeField] int wanderrange=3;
     Vector2 currentposition;
     Vector2 targetPositionLeft;
     Vector2 targetPositionRight;
-    //fase 3
+   
+    //State 3: Chase
     bool ischasing;
     [SerializeField] int chaserange=5;
     [SerializeField] float chaseSpeed=5;
@@ -38,7 +41,7 @@ public class ResponsibilityAI : MonoBehaviour
     }
 
     //Wandering
-    enum enemystate
+    enum enemystate //dit is een switch state. Je enemy heeft 3 statussen: stilstaan, wanderen, chase. Stationary doet momenteel niets, maar dit was het idee voor een stilstaande enemy (Responsibilities 1)
     {
         stationary,
         wander,
