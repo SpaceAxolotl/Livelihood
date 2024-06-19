@@ -1,24 +1,32 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+//made by chatGPT
 public class AudioTrigger : MonoBehaviour
 {
-    //made by chatGPT
-    [SerializeField] private AudioSource audioSource;
-    [SerializeField] private AudioClip audioClip;
+
+    [SerializeField] private AudioSource newAudioSource;   
+    [SerializeField] private AudioClip newAudioClip;
+    [SerializeField] public float audioVolume = 0.5f;
 
     private void Start()
     {
-        if (audioSource == null)
+        if (newAudioSource == null)
         {
-            audioSource = GetComponent<AudioSource>();
+            newAudioSource = GetComponent<AudioSource>();
         }
+        
 
-        if (audioSource == null)
+        if (newAudioSource == null)
         {
             Debug.LogError("AudioSource component not found. Please attach an AudioSource to this GameObject.");
         }
+        newAudioSource.clip = newAudioClip;
+
+        newAudioSource.volume = 0.0f;
+        newAudioSource.Play();
+        newAudioSource.Stop();
+        newAudioSource.volume = audioVolume;
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -31,10 +39,16 @@ public class AudioTrigger : MonoBehaviour
 
     private void PlaySound()
     {
-        if (audioSource != null && audioClip != null && !audioSource.isPlaying)
+        if (newAudioSource != null && newAudioClip != null)
         {
-            audioSource.clip = audioClip;
-            audioSource.Play();
+            
+            newAudioSource.clip = newAudioClip;
+            newAudioSource.Play();
+            
+        }
+        else
+        {
+            Debug.LogError("New AudioSource or AudioClip is not assigned.");
         }
     }
 }
